@@ -1,0 +1,272 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "This Platform can be used to provide CDH 1.0 data via APIs",
+    "version": "1.0",
+    "title": "EmeraldX CDH 1.0 APIs",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Question Request",
+      "description": "Example API for requesting and return Question requests"
+    }
+  ],
+   "paths": {
+    "/Test-request": {
+      "get": {
+        "tags": [
+          "All Questions Request"
+        ],
+        "summary": "Returns QuestionRequests , if you are accessing from an app use /request instead of /Test-request",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/QuestionRequest"
+            }
+          },
+          "404": {
+                    "description": "NOT FOUND",
+                    "schema": {
+                    "$ref": "#/components/schemas/QuestionRequest"
+                    }
+        }
+      }
+     },
+      "post": {
+        "tags": [
+          "Add a question to API"
+        ],
+        "summary": "Add question, if you are accessing from an app use /request instead of /Test-request",
+        "requestBody": {
+          "description": "Post New question To Snowflake Database",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionRequestInsert"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/components/schemas/QuestionRequestInsert"
+            }
+          },
+          "404": {
+            "description": "NOT FOUND",
+            "schema": {
+              "$ref": "#/components/schemas/QuestionRequestInsert"
+            }
+          }
+        }
+      }
+    },
+     "/Test-request/{id}":{
+       "get" :{
+         "tags": [
+           "Get a specific question from API"
+         ],
+         "summary": "Get question, if you are accessing from an app use /request/{id} instead of /Test-request/{id}",
+         "parameters": [{
+           "name": "id",
+           "in": "path",
+           "description": "question id to select",
+           "required": true,
+           "type": "integer",
+           "schema" : {
+             "$ref": "#/components/schemas/id"
+           }
+         }],
+         "responses": {
+           "200": {
+             "description": "OK",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           },
+           "404": {
+             "description": "NOT FOUND",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           }
+         }
+       },
+       "put": {
+         "tags": [
+           "Update a Question on API"
+         ],
+         "parameters": [{
+           "name": "id",
+           "in": "path",
+           "description": "Question id to update",
+           "required": true,
+           "type": "integer",
+           "schema" : {
+             "$ref": "#/components/schemas/id"
+           }
+         }],
+         "summary": "Update question, if you are accessing from an app use /request/{id} instead of /Test-request/{id} ",
+         "requestBody": {
+           "description": "Update Existing question On Database",
+           "required": true,
+           "content": {
+             "application/json": {
+               "schema": {
+                 "$ref": "#/components/schemas/QuestionRequestupdate"
+               }
+             }
+           }
+         },
+         "responses": {
+           "200": {
+             "description": "OK",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           },
+           "404": {
+             "description": "NOT FOUND",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           }
+         }
+       },
+       "delete": {
+         "tags": [
+           "Delete a Question from API"
+         ],
+         "parameters": [{
+           "name": "id",
+           "in": "path",
+           "description": "question id to delete",
+           "required": true,
+           "type": "integer",
+           "schema" : {
+             "$ref": "#/components/schemas/id"
+           }
+         }],
+         "summary": "Delete question, , if you are accessing from an app use /request/{id} instead of /Test-request/{id} ",
+         "responses": {
+           "200": {
+             "description": "OK",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           },
+           "404": {
+             "description": "NOT FOUND",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           }
+         }
+       }
+     },
+      "/Test-request-incremental/{id}":{
+       "get" :{
+         "tags": [
+           "Get a incremental question from API based on the ID"
+         ],
+         "summary": "Get Incremental questions, if you are accessing from an app use /request-incremental/{id} instead of /Test-request-incremental/{id}",
+         "parameters": [{
+           "name": "id",
+           "in": "path",
+           "description": "question id to select",
+           "required": true,
+           "type": "integer",
+           "schema" : {
+             "$ref": "#/components/schemas/id"
+           }
+         }],
+         "responses": {
+           "200": {
+             "description": "OK",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           },
+           "404": {
+             "description": "NOT FOUND",
+             "schema": {
+               "$ref": "#/components/schemas/QuestionRequest"
+             }
+           }
+         }
+       }
+     }
+   },
+
+  "components": {
+    "schemas": {
+      "id": {
+        "properties": {
+          "uuid": {
+            "type": "Integer"
+          }
+        }
+      },
+      "QuestionRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "Integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "score": {
+            "type": "float"
+          }
+        }
+      },
+      "QuestionRequestInsert": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "score": {
+            "type": "float"
+          }
+        }
+      },
+      "QuestionRequestupdate":{
+        "type": "object",
+        "properties" :{
+          "title": {
+            "type": "string"
+          },
+          "link": {
+            "type": "string"
+          },
+          "score": {
+            "type": "float"
+          }
+        }
+      }
+    }
+  }
+}
+
+
