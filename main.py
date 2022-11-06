@@ -21,16 +21,16 @@ from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length
 import datetime
 
-application = Flask("__name__")
+app = Flask("__name__")
 auth = HTTPBasicAuth()
 
 flag = True
 
-application.config[
+app.config[
     "SQLALCHEMY_DATABASE_URI"] = "snowflake://Razak:Welcome13!@citixfd-xvb70636/API_Control_DB/API_Schema?warehouse=API_WH"
-db = SQLAlchemy(application)
+db = SQLAlchemy(app)
 SECRET_KEY = os.urandom(32)
-application.config['SECRET_KEY'] = SECRET_KEY
+app.config['SECRET_KEY'] = SECRET_KEY
 
 # swagger specific
 SWAGGER_URL = '/homeAPI'
@@ -42,13 +42,13 @@ SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
         'app_name': "EmeraldX APIs"
     }
 )
-application.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 
-ma = Marshmallow(application)
+ma = Marshmallow(app)
 
 # set a connection manager for security
 login_manager = LoginManager()
-login_manager.init_app(application)
+login_manager.init_app(app)
 login_manager.login_view = "login"
 
 
@@ -101,27 +101,27 @@ def verify_password(username, password):
             return username
 
 
-@application.route('/expired')
+@app.route('/expired')
 def expired():
     session.clear()
     return Response('<p>session expired</p>')
 
 
 # define a root , and define a function when someone get into the route.@app.route("/")
-@application.route("/")
+@app.route("/")
 def index():
     return redirect(url_for("login"))
 
 
 # define a route to the home page
-@application.route("/homeAPI", methods=["GET", "POST"])
+@app.route("/homeAPI", methods=["GET", "POST"])
 @login_required
 def home():
     return render_template("home.html")
 
 
 # define a route to the login page
-@application.route("/login", methods=["GET", "POST"])
+@app.route("/login", methods=["GET", "POST"])
 def login():
     form = LoginFrom()
     if form.validate_on_submit():
@@ -135,7 +135,7 @@ def login():
     return render_template("login.html", form=form)
 
 
-@application.route("/logout", methods=["GET", "POST"])
+@app.route("/logout", methods=["GET", "POST"])
 @login_required
 def logout():
     logout_user()
@@ -144,28 +144,28 @@ def logout():
 
 
 # here is to make sure that if the user is not active for 230 then log him out
-@application.before_request
+@app.before_request
 def before_request():
     session.permanent = True
-    application.permanent_session_lifetime = timedelta(minutes=2)
+    app.permanent_session_lifetime = timedelta(minutes=2)
     session.modified = True
     g.user = current_user
 
 
 # handle misunderstood
-@application.errorhandler(400)
+@app.errorhandler(400)
 def hand400error(error):
     return Response('<p>misunderstood</p>')
 
 
 # handle login failed
-@application.errorhandler(401)
+@app.errorhandler(401)
 def page_not_found(e):
     return Response('<p>Login failed</p>')
 
 
 # get all questions
-@application.route("/Test-request", methods=["GET"])
+@app.route("/Test-request", methods=["GET"])
 @login_required
 def get_questions():
     questions = Questions.query.all()
@@ -174,7 +174,7 @@ def get_questions():
 
 
 # get all questions from an App
-@application.route("/request", methods=["GET"])
+@app.route("/request", methods=["GET"])
 @auth.login_required
 def get_questions_app():
     questions = Questions.query.all()
@@ -183,7 +183,7 @@ def get_questions_app():
 
 
 # get a specific question
-@application.route("/Test-request/<int:id>", methods=["GET"])
+@app.route("/Test-request/<int:id>", methods=["GET"])
 @login_required
 # @auth.login_required
 def get_question(id):
@@ -192,7 +192,7 @@ def get_question(id):
 
 
 # get a specific question from an App
-@application.route("/request/<int:id>", methods=["GET"])
+@app.route("/request/<int:id>", methods=["GET"])
 @auth.login_required
 def get_question_app(id):
     question = Questions.query.get_or_404(int(id))
@@ -200,7 +200,7 @@ def get_question_app(id):
 
 
 # get incremental from a certain ID:
-@application.route("/Test-request-incremental/<int:ide>", methods=["GET"])
+@app.route("/Test-request-incremental/<int:ide>", methods=["GET"])
 @login_required
 def get_question_incremental(ide):
     questions = db.session.query(Questions).filter(Questions.id >= ide)
@@ -208,7 +208,7 @@ def get_question_incremental(ide):
     return jsonify(result_set)
 
 # get incremental from a certain from an App:
-@application.route("/request-incremental/<int:ide>", methods=["GET"])
+@app.route("/request-incremental/<int:ide>", methods=["GET"])
 @auth.login_required
 def get_question_incremental_app(ide):
     questions = db.session.query(Questions).filter(Questions.id >= ide)
@@ -218,7 +218,7 @@ def get_question_incremental_app(ide):
 
 
 # add a question
-@application.route("/Test-request", methods=["POST"])
+@app.route("/Test-request", methods=["POST"])
 @login_required
 def add_question():
     try:
@@ -239,7 +239,7 @@ def add_question():
 
 
 # add a question from an app
-@application.route("/request", methods=["POST"])
+@app.route("/request", methods=["POST"])
 @auth.login_required
 def add_question_app():
     try:
@@ -260,7 +260,7 @@ def add_question_app():
 
 
 # update a question
-@application.route("/Test-request/<int:id>", methods=["PUT"])
+@app.route("/Test-request/<int:id>", methods=["PUT"])
 @login_required
 def update_question(id):
     question = Questions.query.get_or_404(int(id))
@@ -282,7 +282,7 @@ def update_question(id):
 
 
 # update a question from an app
-@application.route("/request/<int:id>", methods=["PUT"])
+@app.route("/request/<int:id>", methods=["PUT"])
 @auth.login_required
 def update_question_app(id):
     question = Questions.query.get_or_404(int(id))
@@ -304,7 +304,7 @@ def update_question_app(id):
 
 
 # delete a question
-@application.route("/Test-request/<int:id>", methods=["DELETE"])
+@app.route("/Test-request/<int:id>", methods=["DELETE"])
 @login_required
 def delete_question(id):
     question = Questions.query.get_or_404(int(id))
@@ -314,7 +314,7 @@ def delete_question(id):
 
 
 # delete a question from an App
-@application.route("/request/<int:id>", methods=["DELETE"])
+@app.route("/request/<int:id>", methods=["DELETE"])
 @auth.login_required
 def delete_question_app(id):
     question = Questions.query.get_or_404(int(id))
@@ -324,4 +324,4 @@ def delete_question_app(id):
 
 
 if __name__ == "__main__":
-    application.run(debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=True)
