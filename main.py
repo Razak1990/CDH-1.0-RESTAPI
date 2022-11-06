@@ -147,7 +147,7 @@ def logout():
 @app.before_request
 def before_request():
     session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=2)
+    app.permanent_session_lifetime = timedelta(minutes=20)
     session.modified = True
     g.user = current_user
 
