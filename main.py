@@ -19,7 +19,7 @@ from flask_swagger_ui import get_swaggerui_blueprint
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import InputRequired, Length
-from   datetime import timedelta
+from datetime import timedelta
 
 app = Flask("__name__")
 auth = HTTPBasicAuth()
@@ -28,7 +28,7 @@ flag = True
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"] = "snowflake://Razak:Welcome13!@citixfd-xvb70636/API_Control_DB/API_Schema?warehouse=API_WH"
-app.config["USE_SESSION_FOR_NEXT"]=True
+app.config["USE_SESSION_FOR_NEXT"] = True
 app.config["REMEMBER_COOKIE_DURATION"] = timedelta(minutes=20)
 
 db = SQLAlchemy(app)
@@ -105,16 +105,16 @@ def verify_password(username, password):
 
 
 # define a root , and define a function when someone get into the route.@app.route("/")
-#@app.route("/")
-#def index():
-#    return redirect(url_for("login"))
+@app.route("/")
+def index():
+    return redirect(url_for("homeAPI"))
 
 
 # define a route to the home page
 @app.route("/homeAPI", methods=["GET", "POST"])
 @login_required
 def home():
-    return render_template("home.html")
+    return redirect(url_for("swagger_ui.show"))
 
 
 # define a route to the login page
