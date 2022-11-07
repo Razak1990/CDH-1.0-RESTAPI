@@ -101,12 +101,6 @@ def verify_password(username, password):
             return username
 
 
-@app.route('/expired')
-def expired():
-    session.clear()
-    return Response('<p>session expired</p>')
-
-
 # define a root , and define a function when someone get into the route.@app.route("/")
 @app.route("/")
 def index():
