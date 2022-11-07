@@ -106,8 +106,9 @@ def verify_password(username, password):
 
 # define a root , and define a function when someone get into the route.@app.route("/")
 @app.route("/")
+@login_required
 def index():
-    return redirect(url_for("homeAPI"))
+    return redirect(url_for("swagger_ui.show"))
 
 
 # define a route to the home page
