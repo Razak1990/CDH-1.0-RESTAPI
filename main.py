@@ -28,6 +28,7 @@ flag = True
 
 app.config[
     "SQLALCHEMY_DATABASE_URI"] = "snowflake://Razak:Welcome13!@citixfd-xvb70636/API_Control_DB/API_Schema?warehouse=API_WH"
+app.config["USE_SESSION_FOR_NEXT"]=True
 db = SQLAlchemy(app)
 SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
