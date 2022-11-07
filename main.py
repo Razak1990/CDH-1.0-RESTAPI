@@ -114,10 +114,10 @@ def index():
 
 
 # define a route to the home page
-@app.route("/homeAPI", methods=["GET", "POST"])
-@login_required
-def home():
-    return render_template("home.html")
+#@app.route("/homeAPI", methods=["GET", "POST"])
+#@login_required
+#def home():
+#    return render_template("home.html")
 
 
 # define a route to the login page
